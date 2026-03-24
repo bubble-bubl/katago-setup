@@ -30,3 +30,5 @@ STARTEOF
 chmod +x /root/start_katago.sh
 curl -s ifconfig.me && echo " <- Server IP"
 echo "SSH Port: $VAST_TCP_PORT_22"
+sed -i 's/#PubkeyAuthentication yes/PubkeyAuthentication yes/' /etc/ssh/sshd_config
+service ssh restart
