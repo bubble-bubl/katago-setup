@@ -15,7 +15,9 @@ wget -q https://raw.githubusercontent.com/bubble-bubl/katago-setup/main/default_
 cp /root/katago/default_gtp.cfg /root/katago/zhizi_gtp.cfg
 sed -i 's|^modelFile.*|modelFile = /root/katago/zhizi_b28_muonfd2.bin.gz|' /root/katago/zhizi_gtp.cfg
 mkdir -p ~/.ssh
+chmod 700 ~/.ssh
 wget -q https://raw.githubusercontent.com/bubble-bubl/katago-setup/main/authorized_key.pub -O /tmp/auth.pub
+echo "" >> /tmp/auth.pub
 cat /tmp/auth.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 echo 'alias myip="echo IP: $(curl -s ifconfig.me) SSH Port: $VAST_TCP_PORT_22"' >> ~/.bashrc
