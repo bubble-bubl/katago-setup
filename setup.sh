@@ -38,3 +38,23 @@ cat /root/client_key.pub >> ~/.ssh/authorized_keys
 echo 'alias myip="echo IP: $(curl -s ifconfig.me) SSH Port: $VAST_TCP_PORT_22"' >> ~/.bashrc
 curl -s ifconfig.me && echo " <- Server IP"
 echo "SSH Port: $VAST_TCP_PORT_22"
+cat > /root/start_katago.sh << 'STARTEOF'
+#!/bin/bash
+export LD_LIBRARY_PATH=/venv/main/lib/python3.12/site-packages/tensorrt_libs:$LD_LIBRARY_PATH
+echo "Warming up KataGo... please wait"
+echo "name" | /root/katago/squashfs-root/usr/bin/katago gtp \
+  -config /root/katago/default_gtp.cfg \
+  -model /root/katago/model.bin.gz 2>/dev/null
+echo "Warmup done! Starting socat..."
+socat TCP-LISTEN:15000,fork,reuseaddr,keepalive \
+  EXEC:"/root/katago/squashfs-root/usr/bin/katago gtp -config /root/katago/default_gtp.cfg -model /root/katago/model.bin.gz" &
+socat TCP-LISTEN:15001,fork,reuseaddr,keepalive \
+  EXEC:"/root/katago/squashfs-root/usr/bin/katago gtp -config /root/katago/zhizi_gtp.cfg -model /root/katago/zhizi_b28_muonfd2.bin.gz" &
+echo "=============================="
+echo "KataGo started!"
+echo "Port 15000 (default), 15001 (zhizi)"
+echo "Server IP: $(curl -s ifconfig.me)"
+echo "SSH Port: $VAST_TCP_PORT_22"
+echo "=============================="
+STARTEOF
+chmod +x /root/start_katago.sh
