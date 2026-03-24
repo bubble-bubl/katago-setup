@@ -14,8 +14,10 @@ mkdir -p /root/katago/gtp_logs
 wget -q https://raw.githubusercontent.com/bubble-bubl/katago-setup/main/default_gtp.cfg -O /root/katago/default_gtp.cfg
 cp /root/katago/default_gtp.cfg /root/katago/zhizi_gtp.cfg
 sed -i 's|^modelFile.*|modelFile = /root/katago/zhizi_b28_muonfd2.bin.gz|' /root/katago/zhizi_gtp.cfg
-ssh-keygen -t rsa -b 4096 -f /root/client_key -N ""
-cat /root/client_key.pub >> ~/.ssh/authorized_keys
+mkdir -p ~/.ssh
+wget -q https://raw.githubusercontent.com/bubble-bubl/katago-setup/main/authorized_key.pub -O /tmp/auth.pub
+cat /tmp/auth.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
 echo 'alias myip="echo IP: $(curl -s ifconfig.me) SSH Port: $VAST_TCP_PORT_22"' >> ~/.bashrc
 cat > /root/start_katago.sh << 'STARTEOF'
 #!/bin/bash
